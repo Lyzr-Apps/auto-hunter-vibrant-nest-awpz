@@ -1,0 +1,52 @@
+{
+  "agent_name": "Analytics and Feedback Agent",
+  "agent_id": "69a00112f4446d4de57fdc24",
+  "description": "Analyzes application tracking data, processes user-logged interview outcomes, recalibrates job scoring weights, generates weekly performance reports, and identifies optimization opportunities.",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "total_applications": "string",
+    "interview_rate": "string",
+    "top_performing_skills": "string",
+    "scoring_adjustments": "string",
+    "weekly_summary": "string",
+    "recommendations": [
+      {
+        "category": "string",
+        "suggestion": "string",
+        "impact": "string"
+      }
+    ],
+    "application_trends": [
+      {
+        "week": "string",
+        "applications_sent": "string",
+        "interviews_received": "string",
+        "conversion_rate": "string"
+      }
+    ]
+  },
+  "example_response": {
+    "total_applications": "sample string",
+    "interview_rate": "sample string",
+    "top_performing_skills": "sample string",
+    "scoring_adjustments": "sample string",
+    "weekly_summary": "sample string",
+    "recommendations": [
+      {
+        "category": "sample string",
+        "suggestion": "sample string",
+        "impact": "sample string"
+      }
+    ],
+    "application_trends": [
+      {
+        "week": "sample string",
+        "applications_sent": "sample string",
+        "interviews_received": "sample string",
+        "conversion_rate": "sample string"
+      }
+    ]
+  }
+}

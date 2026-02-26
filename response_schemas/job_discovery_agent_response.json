@@ -1,0 +1,46 @@
+{
+  "agent_name": "Job Discovery Agent",
+  "agent_id": "69a000da9853b5a45a209da0",
+  "description": "Processes raw job listings fetched by the external scraping layer, deduplicates, detects scam indicators, and structures job data for scoring.",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "jobs": [
+      {
+        "title": "string",
+        "company": "string",
+        "location": "string",
+        "salary_range": "string",
+        "source": "string",
+        "url": "string",
+        "description_summary": "string",
+        "posted_date": "string",
+        "is_scam": "boolean",
+        "scam_indicators": "string"
+      }
+    ],
+    "total_found": "string",
+    "duplicates_removed": "string",
+    "scams_detected": "string"
+  },
+  "example_response": {
+    "jobs": [
+      {
+        "title": "sample string",
+        "company": "sample string",
+        "location": "sample string",
+        "salary_range": "sample string",
+        "source": "sample string",
+        "url": "sample string",
+        "description_summary": "sample string",
+        "posted_date": "sample string",
+        "is_scam": false,
+        "scam_indicators": "sample string"
+      }
+    ],
+    "total_found": "sample string",
+    "duplicates_removed": "sample string",
+    "scams_detected": "sample string"
+  }
+}

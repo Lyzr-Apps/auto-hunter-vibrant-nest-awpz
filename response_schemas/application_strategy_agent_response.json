@@ -1,0 +1,42 @@
+{
+  "agent_name": "Application Strategy Agent",
+  "agent_id": "69a000db5c89478b3d077140",
+  "description": "Analyzes each JD for preferred application methods (direct email, portal, quick-apply), determines optimal route, and prepares structured execution instructions for the automation layer.",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "strategies": [
+      {
+        "job_title": "string",
+        "company": "string",
+        "recommended_method": "string",
+        "method_reasoning": "string",
+        "email_address": "string",
+        "portal_url": "string",
+        "execution_instructions": "string",
+        "priority_level": "string"
+      }
+    ],
+    "direct_email_count": "string",
+    "quick_apply_count": "string",
+    "portal_count": "string"
+  },
+  "example_response": {
+    "strategies": [
+      {
+        "job_title": "sample string",
+        "company": "sample string",
+        "recommended_method": "sample string",
+        "method_reasoning": "sample string",
+        "email_address": "sample string",
+        "portal_url": "sample string",
+        "execution_instructions": "sample string",
+        "priority_level": "sample string"
+      }
+    ],
+    "direct_email_count": "sample string",
+    "quick_apply_count": "sample string",
+    "portal_count": "sample string"
+  }
+}

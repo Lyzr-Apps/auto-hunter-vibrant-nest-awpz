@@ -1,0 +1,56 @@
+{
+  "agent_name": "Job Pipeline Orchestrator",
+  "agent_id": "69a000f26a4eb8f58312baf7",
+  "description": "Coordinates the end-to-end job processing pipeline: routes discovered jobs through scoring, customization, and application strategy agents, aggregates final application packages.",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "pipeline_status": "string",
+    "total_jobs_discovered": "string",
+    "total_jobs_qualified": "string",
+    "total_applications_prepared": "string",
+    "auto_apply_count": "string",
+    "review_needed_count": "string",
+    "pipeline_summary": "string",
+    "application_packages": [
+      {
+        "job_title": "string",
+        "company": "string",
+        "score": "string",
+        "application_method": "string",
+        "status": "string",
+        "resume_customized": "string",
+        "cover_letter_ready": "string"
+      }
+    ]
+  },
+  "example_response": {
+    "pipeline_status": "sample string",
+    "total_jobs_discovered": "sample string",
+    "total_jobs_qualified": "sample string",
+    "total_applications_prepared": "sample string",
+    "auto_apply_count": "sample string",
+    "review_needed_count": "sample string",
+    "pipeline_summary": "sample string",
+    "application_packages": [
+      {
+        "job_title": "sample string",
+        "company": "sample string",
+        "score": "sample string",
+        "application_method": "sample string",
+        "status": "sample string",
+        "resume_customized": "sample string",
+        "cover_letter_ready": "sample string"
+      }
+    ]
+  },
+  "has_module_outputs": true,
+  "module_outputs_example": {
+    "artifact_files": [
+      {
+        "file_url": "https://example.com/file.pdf"
+      }
+    ]
+  }
+}

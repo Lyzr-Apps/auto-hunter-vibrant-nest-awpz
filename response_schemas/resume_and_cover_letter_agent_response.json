@@ -1,0 +1,34 @@
+{
+  "agent_name": "Resume and Cover Letter Agent",
+  "agent_id": "69a000db881ff4d2ab212068",
+  "description": "Generates tailored resume modifications and custom cover letters per job, aligning language to JD keywords while maintaining authenticity.",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "customizations": [
+      {
+        "job_title": "string",
+        "company": "string",
+        "resume_modifications": "string",
+        "cover_letter": "string",
+        "keywords_targeted": "string",
+        "personalization_notes": "string"
+      }
+    ],
+    "total_customized": "string"
+  },
+  "example_response": {
+    "customizations": [
+      {
+        "job_title": "sample string",
+        "company": "sample string",
+        "resume_modifications": "sample string",
+        "cover_letter": "sample string",
+        "keywords_targeted": "sample string",
+        "personalization_notes": "sample string"
+      }
+    ],
+    "total_customized": "sample string"
+  }
+}

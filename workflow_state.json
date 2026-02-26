@@ -1,0 +1,130 @@
+{
+  "project": "JobPilot AI - Autonomous Job Application System",
+  "pattern": "manager-subagent + independent",
+  "created_at": "2026-02-26T08:15:44Z",
+  "knowledge_base": {
+    "name": "User CV Profile KB",
+    "rag_id": "69a000a900c2d274880efd04",
+    "rag_name": "usercvprofilekbtcyf",
+    "description": "Knowledge base for user CV, resume, professional profile, skills, experience, salary expectations, location preferences, and work authorization details.",
+    "used_by": [
+      "Job Scoring and Matching Agent",
+      "Resume and Cover Letter Agent",
+      "Analytics and Feedback Agent"
+    ]
+  },
+  "agents": {
+    "manager": {
+      "name": "Job Pipeline Orchestrator",
+      "agent_id": "69a000f26a4eb8f58312baf7",
+      "type": "manager",
+      "provider": "openai",
+      "model": "gpt-4.1",
+      "temperature": 0.3,
+      "top_p": 1,
+      "managed_agents": [
+        "69a000da9853b5a45a209da0",
+        "69a000db6a4eb8f58312baed",
+        "69a000db881ff4d2ab212068",
+        "69a000db5c89478b3d077140"
+      ]
+    },
+    "sub_agents": [
+      {
+        "name": "Job Discovery Agent",
+        "agent_id": "69a000da9853b5a45a209da0",
+        "type": "sub-agent",
+        "provider": "perplexity",
+        "model": "sonar-pro",
+        "temperature": 0.2,
+        "top_p": 1,
+        "has_knowledge_base": false
+      },
+      {
+        "name": "Job Scoring and Matching Agent",
+        "agent_id": "69a000db6a4eb8f58312baed",
+        "type": "sub-agent",
+        "provider": "openai",
+        "model": "gpt-4.1",
+        "temperature": 0.3,
+        "top_p": 1,
+        "has_knowledge_base": true,
+        "rag_id": "69a000a900c2d274880efd04"
+      },
+      {
+        "name": "Resume and Cover Letter Agent",
+        "agent_id": "69a000db881ff4d2ab212068",
+        "type": "sub-agent",
+        "provider": "openai",
+        "model": "gpt-4.1",
+        "temperature": 0.7,
+        "top_p": 0.95,
+        "has_knowledge_base": true,
+        "rag_id": "69a000a900c2d274880efd04"
+      },
+      {
+        "name": "Application Strategy Agent",
+        "agent_id": "69a000db5c89478b3d077140",
+        "type": "sub-agent",
+        "provider": "openai",
+        "model": "gpt-4.1",
+        "temperature": 0.2,
+        "top_p": 1,
+        "has_knowledge_base": false
+      }
+    ],
+    "independent": [
+      {
+        "name": "Human Intervention Agent",
+        "agent_id": "69a001258e73c9f97733b283",
+        "type": "independent",
+        "provider": "openai",
+        "model": "gpt-4.1",
+        "temperature": 0.2,
+        "top_p": 1,
+        "has_knowledge_base": false,
+        "tools": ["GMAIL_SEND_EMAIL"]
+      },
+      {
+        "name": "Analytics and Feedback Agent",
+        "agent_id": "69a00112f4446d4de57fdc24",
+        "type": "independent",
+        "provider": "openai",
+        "model": "gpt-4.1",
+        "temperature": 0.4,
+        "top_p": 1,
+        "has_knowledge_base": true,
+        "rag_id": "69a000a900c2d274880efd04"
+      }
+    ]
+  },
+  "schedules": [
+    {
+      "schedule_id": "69a0012f25d4d77f732e4319",
+      "agent_id": "69a000f26a4eb8f58312baf7",
+      "agent_name": "Job Pipeline Orchestrator",
+      "cron_expression": "0 8 * * *",
+      "description": "Daily at 8:00 AM UTC - Runs full job discovery and application pipeline",
+      "timezone": "UTC",
+      "is_active": false
+    },
+    {
+      "schedule_id": "69a0013025d4d77f732e431a",
+      "agent_id": "69a00112f4446d4de57fdc24",
+      "agent_name": "Analytics and Feedback Agent",
+      "cron_expression": "0 9 * * 1",
+      "description": "Weekly on Monday at 9:00 AM UTC - Generates weekly performance report and recalibrates scoring",
+      "timezone": "UTC",
+      "is_active": false
+    }
+  ],
+  "all_agent_ids": [
+    "69a000f26a4eb8f58312baf7",
+    "69a000da9853b5a45a209da0",
+    "69a000db6a4eb8f58312baed",
+    "69a000db881ff4d2ab212068",
+    "69a000db5c89478b3d077140",
+    "69a001258e73c9f97733b283",
+    "69a00112f4446d4de57fdc24"
+  ]
+}

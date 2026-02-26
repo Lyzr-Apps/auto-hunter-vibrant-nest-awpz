@@ -1,0 +1,44 @@
+{
+  "agent_name": "Job Scoring and Matching Agent",
+  "agent_id": "69a000db6a4eb8f58312baed",
+  "description": "Scores each job against user profile using weighted criteria (skills match, experience fit, salary range, location, work authorization), rejects low-quality matches.",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "scored_jobs": [
+      {
+        "title": "string",
+        "company": "string",
+        "overall_score": "string",
+        "skills_match": "string",
+        "experience_fit": "string",
+        "salary_fit": "string",
+        "location_fit": "string",
+        "recommendation": "string",
+        "key_gaps": "string"
+      }
+    ],
+    "qualified_count": "string",
+    "rejected_count": "string",
+    "average_score": "string"
+  },
+  "example_response": {
+    "scored_jobs": [
+      {
+        "title": "sample string",
+        "company": "sample string",
+        "overall_score": "sample string",
+        "skills_match": "sample string",
+        "experience_fit": "sample string",
+        "salary_fit": "sample string",
+        "location_fit": "sample string",
+        "recommendation": "sample string",
+        "key_gaps": "sample string"
+      }
+    ],
+    "qualified_count": "sample string",
+    "rejected_count": "sample string",
+    "average_score": "sample string"
+  }
+}
