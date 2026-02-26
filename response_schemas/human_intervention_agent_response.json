@@ -1,7 +1,7 @@
 {
   "agent_name": "Human Intervention Agent",
   "agent_id": "69a001258e73c9f97733b283",
-  "description": "Monitors execution signals from the browser automation layer, detects CAPTCHAs, OTPs, login issues, video response requirements, psychometric tests, and unknown UI structures; pauses execution, stores system state, and sends structured notifications to the user via Gmail.",
+  "description": "Monitors execution signals from the browser automation layer, detects CAPTCHAs, OTPs, login issues, video response requirements, psychometric tests, and unknown UI structures; pauses execution, stores system state, and sends structured notifications to the user via Gmail and Telegram.",
   "agent_type": "json",
   "accessor": "result",
   "auto_generated": true,
@@ -14,6 +14,7 @@
     "system_state": "string",
     "notification_sent": "string",
     "notification_method": "string",
+    "telegram_sent": "string",
     "timestamp": "string"
   },
   "example_response": {
@@ -25,6 +26,7 @@
     "system_state": "sample string",
     "notification_sent": "sample string",
     "notification_method": "sample string",
+    "telegram_sent": "sample string",
     "timestamp": "sample string"
   }
 }

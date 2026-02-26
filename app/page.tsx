@@ -56,7 +56,12 @@ import {
   Activity,
   Home,
   X,
-  Info
+  Info,
+  MessageCircle,
+  ExternalLink,
+  Hash,
+  Bot,
+  Smartphone
 } from 'lucide-react'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -100,6 +105,7 @@ interface InterventionData {
   system_state: string
   notification_sent: string
   notification_method: string
+  telegram_sent?: string
   timestamp: string
 }
 
@@ -201,10 +207,11 @@ const SAMPLE_INTERVENTIONS: InterventionData[] = [
     affected_application: 'Senior Frontend Engineer',
     company: 'Stripe',
     description: 'reCAPTCHA challenge detected during application submission on the Stripe careers portal.',
-    action_required: 'Please solve the CAPTCHA on the open browser window to continue the application.',
+    action_required: 'Please solve the CAPTCHA on the open browser window to continue the application. Send /resume Stripe via Telegram when done.',
     system_state: 'Paused at form submission step 3/4',
     notification_sent: 'Yes',
-    notification_method: 'Gmail',
+    notification_method: 'Telegram + Gmail',
+    telegram_sent: 'Yes',
     timestamp: '2024-01-15T14:32:00Z'
   },
   {
@@ -212,10 +219,11 @@ const SAMPLE_INTERVENTIONS: InterventionData[] = [
     affected_application: 'Platform Engineer',
     company: 'Datadog',
     description: 'Email OTP verification required to complete account creation on Datadog careers portal.',
-    action_required: 'Check your email for a 6-digit verification code and enter it in the browser.',
+    action_required: 'Check your email for a 6-digit verification code and enter it in the browser. Send /resume Datadog via Telegram when done.',
     system_state: 'Paused at account verification',
     notification_sent: 'Yes',
-    notification_method: 'Gmail',
+    notification_method: 'Telegram + Gmail',
+    telegram_sent: 'Yes',
     timestamp: '2024-01-15T15:10:00Z'
   }
 ]
@@ -618,7 +626,7 @@ export default function Page() {
   const checkInterventions = useCallback(async () => {
     setInterventionLoading(true)
     setActiveAgentId(HUMAN_INTERVENTION_ID)
-    const checkMessage = `Check for any current intervention requirements in the job application pipeline. Report any CAPTCHAs, OTPs, login issues, or other blockers that need human attention.${notificationEmail ? ` Send notification to ${notificationEmail} if any issues found.` : ''}`
+    const checkMessage = `Check for any current intervention requirements in the job application pipeline. Report any CAPTCHAs, OTPs, login issues, or other blockers that need human attention. Send notification via Telegram immediately.${notificationEmail ? ` Also send backup notification to ${notificationEmail} via Gmail.` : ''}`
     try {
       const result = await callAIAgent(checkMessage, HUMAN_INTERVENTION_ID)
       const data = parseAgentResponse(result)
@@ -639,7 +647,7 @@ export default function Page() {
   const resumeIntervention = useCallback(async (company: string) => {
     setResumingCompany(company)
     setActiveAgentId(HUMAN_INTERVENTION_ID)
-    const resumeMessage = `The user has resolved the intervention issue for ${company}. Resume the application process from the saved system state.`
+    const resumeMessage = `The user has resolved the intervention issue for ${company}. Resume the application process from the saved system state. Confirm via Telegram that the process has resumed.`
     try {
       const result = await callAIAgent(resumeMessage, HUMAN_INTERVENTION_ID)
       if (result.success) {
@@ -821,7 +829,7 @@ export default function Page() {
               </div>
               <div>
                 <h1 className="text-lg font-bold text-white tracking-tight">JobPilot AI</h1>
-                <p className="text-[10px] text-slate-500 uppercase tracking-widest">Intelligent Job Automation</p>
+                <p className="text-[10px] text-slate-500 uppercase tracking-widest">Telegram-Powered Automation</p>
               </div>
             </div>
 
@@ -952,22 +960,60 @@ export default function Page() {
                   <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600/20 via-blue-600/10 to-slate-900 border border-indigo-500/20 p-8">
                     <div className="relative z-10">
                       <h1 className="text-3xl font-bold text-white mb-2">Welcome to JobPilot AI</h1>
-                      <p className="text-slate-300 max-w-xl mb-6">Your intelligent job application pipeline. Discover, score, customize, and apply to jobs automatically -- powered by AI agents working in concert.</p>
-                      <Button
-                        size="lg"
-                        onClick={runPipeline}
-                        disabled={pipelineLoading}
-                        className="bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-400 hover:to-blue-500 text-white border-0 shadow-lg shadow-indigo-500/25"
-                      >
-                        {pipelineLoading ? (
-                          <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Running Pipeline...</>
-                        ) : (
-                          <><Play className="h-4 w-4 mr-2" />Run Job Pipeline</>
-                        )}
-                      </Button>
+                      <p className="text-slate-300 max-w-xl mb-4">Your intelligent job application pipeline. Discover, score, customize, and apply to jobs automatically -- powered by AI agents working in concert.</p>
+                      <div className="flex items-center gap-3 mb-6 bg-blue-500/10 border border-blue-500/20 rounded-lg px-4 py-3 max-w-xl">
+                        <MessageCircle className="h-5 w-5 text-blue-400 shrink-0" />
+                        <div>
+                          <p className="text-sm text-blue-200 font-medium">Telegram is your command center</p>
+                          <p className="text-xs text-blue-300/70 mt-0.5">Send commands via Telegram to trigger pipelines, set preferences, and manage applications. This dashboard monitors results.</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Button
+                          size="lg"
+                          onClick={runPipeline}
+                          disabled={pipelineLoading}
+                          variant="outline"
+                          className="border-slate-600 text-slate-200 hover:bg-slate-800"
+                        >
+                          {pipelineLoading ? (
+                            <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Running Pipeline...</>
+                          ) : (
+                            <><Play className="h-4 w-4 mr-2" />Run Pipeline (Dashboard)</>
+                          )}
+                        </Button>
+                      </div>
                     </div>
                     <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl" />
                   </div>
+
+                  {/* Telegram Commands Reference */}
+                  <Card className="bg-slate-900/80 border-slate-700/50 border-l-4 border-l-blue-500">
+                    <CardHeader>
+                      <CardTitle className="text-base text-slate-200 flex items-center gap-2">
+                        <Bot className="h-5 w-5 text-blue-400" />
+                        Telegram Commands
+                      </CardTitle>
+                      <CardDescription className="text-slate-400">Send these commands to your JobPilot Telegram bot to control the pipeline</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {[
+                          { cmd: '/run', desc: 'Trigger the full job discovery and application pipeline' },
+                          { cmd: '/status', desc: 'Check current pipeline status and recent results' },
+                          { cmd: '/resume [company]', desc: 'Resume a paused application after resolving an issue' },
+                          { cmd: '/analytics', desc: 'Generate a fresh analytics and performance report' },
+                          { cmd: '/preferences', desc: 'Update your target roles, skills, salary, and location' },
+                          { cmd: '/help', desc: 'View all available commands and bot instructions' },
+                        ].map(({ cmd, desc }) => (
+                          <div key={cmd} className="flex items-start gap-3 bg-slate-800/40 rounded-lg px-3 py-2.5 border border-slate-700/30">
+                            <code className="text-xs font-mono text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded shrink-0 mt-0.5">{cmd}</code>
+                            <p className="text-xs text-slate-400">{desc}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
 
                   {/* Stats */}
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -1054,11 +1100,11 @@ export default function Page() {
                     <Card className="bg-slate-900/80 border-slate-700/50">
                       <CardContent className="py-12 text-center">
                         <div className="w-16 h-16 rounded-2xl bg-slate-800 flex items-center justify-center mx-auto mb-4">
-                          <Briefcase className="h-8 w-8 text-slate-500" />
+                          <MessageCircle className="h-8 w-8 text-blue-400" />
                         </div>
                         <h3 className="text-lg font-semibold text-slate-300 mb-2">No pipeline results yet</h3>
-                        <p className="text-sm text-slate-500 max-w-md mx-auto mb-4">Click "Run Job Pipeline" above to discover jobs, score them, and prepare applications automatically.</p>
-                        <p className="text-xs text-slate-600">Tip: Set up your profile and upload your CV first for better results.</p>
+                        <p className="text-sm text-slate-500 max-w-md mx-auto mb-4">Send <code className="text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded text-xs font-mono">/run</code> via Telegram to trigger the pipeline, or use the dashboard button above. Results will appear here.</p>
+                        <p className="text-xs text-slate-600">Tip: Upload your CV in the Profile tab and set preferences before running.</p>
                       </CardContent>
                     </Card>
                   )}
@@ -1070,6 +1116,47 @@ export default function Page() {
                  ═══════════════════════════════════════════════════════════════ */}
               {activeTab === 'profile' && (
                 <div className="space-y-6">
+                  {/* Telegram Connection Info */}
+                  <Card className="bg-slate-900/80 border-slate-700/50 border-l-4 border-l-blue-500">
+                    <CardHeader>
+                      <CardTitle className="text-base text-slate-200 flex items-center gap-2">
+                        <MessageCircle className="h-5 w-5 text-blue-400" />
+                        Telegram Integration
+                      </CardTitle>
+                      <CardDescription className="text-slate-400">Your primary input channel for controlling JobPilot AI</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="bg-blue-500/5 border border-blue-500/20 rounded-lg p-4">
+                          <div className="flex items-start gap-3">
+                            <Smartphone className="h-5 w-5 text-blue-400 mt-0.5 shrink-0" />
+                            <div className="space-y-2">
+                              <p className="text-sm text-slate-300">All user inputs -- job preferences, pipeline triggers, intervention responses -- are handled via Telegram.</p>
+                              <p className="text-sm text-slate-300">This dashboard serves as a <strong className="text-white">monitoring and review interface</strong>. You can still upload CVs and review applications here.</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                          <div className="bg-slate-800/50 rounded-lg p-3 border border-slate-700/30 text-center">
+                            <Hash className="h-5 w-5 text-blue-400 mx-auto mb-1.5" />
+                            <p className="text-xs text-slate-400">Send preferences</p>
+                            <code className="text-[10px] text-blue-400 font-mono">/preferences</code>
+                          </div>
+                          <div className="bg-slate-800/50 rounded-lg p-3 border border-slate-700/30 text-center">
+                            <Play className="h-5 w-5 text-emerald-400 mx-auto mb-1.5" />
+                            <p className="text-xs text-slate-400">Trigger pipeline</p>
+                            <code className="text-[10px] text-blue-400 font-mono">/run</code>
+                          </div>
+                          <div className="bg-slate-800/50 rounded-lg p-3 border border-slate-700/30 text-center">
+                            <Bell className="h-5 w-5 text-amber-400 mx-auto mb-1.5" />
+                            <p className="text-xs text-slate-400">Get alerts</p>
+                            <code className="text-[10px] text-blue-400 font-mono">Auto via bot</code>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
                   {/* CV Upload */}
                   <Card className="bg-slate-900/80 border-slate-700/50">
                     <CardHeader>
@@ -1163,7 +1250,7 @@ export default function Page() {
                         <Settings className="h-5 w-5 text-indigo-400" />
                         Profile Preferences
                       </CardTitle>
-                      <CardDescription className="text-slate-400">Configure your job search preferences. These are used when running the pipeline.</CardDescription>
+                      <CardDescription className="text-slate-400">Reference view of your job search preferences. Update these via Telegram using <code className="text-blue-400 bg-blue-500/10 px-1 py-0.5 rounded text-[10px] font-mono">/preferences</code> or edit locally below.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-5">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -1232,7 +1319,7 @@ export default function Page() {
                       </div>
                     </CardContent>
                     <CardFooter className="border-t border-slate-800 pt-4">
-                      <p className="text-xs text-slate-500">Preferences are stored locally and sent with each pipeline run.</p>
+                      <p className="text-xs text-slate-500">Preferences are stored locally for dashboard pipeline runs. For Telegram-triggered runs, update via <code className="text-blue-400 font-mono">/preferences</code> command.</p>
                     </CardFooter>
                   </Card>
                 </div>
@@ -1284,7 +1371,7 @@ export default function Page() {
                           <Briefcase className="h-8 w-8 text-slate-500" />
                         </div>
                         <h3 className="text-lg font-semibold text-slate-300 mb-2">No applications in queue</h3>
-                        <p className="text-sm text-slate-500 max-w-md mx-auto">Run the job pipeline from the Dashboard tab to discover and prepare applications.</p>
+                        <p className="text-sm text-slate-500 max-w-md mx-auto">Send <code className="text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded text-xs font-mono">/run</code> via Telegram or trigger the pipeline from the Dashboard to discover and prepare applications.</p>
                       </CardContent>
                     </Card>
                   ) : (
@@ -1347,14 +1434,27 @@ export default function Page() {
                  ═══════════════════════════════════════════════════════════════ */}
               {activeTab === 'interventions' && (
                 <div className="space-y-6">
-                  {/* Notification Email */}
+                  {/* Telegram Alert Info */}
+                  <Card className="bg-slate-900/80 border-slate-700/50 border-l-4 border-l-blue-500">
+                    <CardContent className="p-5">
+                      <div className="flex items-start gap-3">
+                        <MessageCircle className="h-5 w-5 text-blue-400 mt-0.5 shrink-0" />
+                        <div>
+                          <p className="text-sm text-blue-200 font-medium">Alerts are sent via Telegram</p>
+                          <p className="text-xs text-blue-300/70 mt-1">When CAPTCHAs, OTPs, or login issues are detected, you will receive an instant Telegram notification. Resolve the issue and reply with <code className="text-blue-400 bg-blue-500/10 px-1 py-0.5 rounded font-mono">/resume [company]</code> to continue. Gmail backup notifications are also sent.</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Notification Email + Check */}
                   <Card className="bg-slate-900/80 border-slate-700/50">
                     <CardContent className="p-5">
                       <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4">
                         <div className="flex-1 space-y-2">
                           <Label className="text-slate-300 text-sm flex items-center gap-1.5">
                             <Mail className="h-3.5 w-3.5 text-indigo-400" />
-                            Notification Email
+                            Backup Notification Email
                           </Label>
                           <Input
                             type="email"
@@ -1363,6 +1463,7 @@ export default function Page() {
                             onChange={(e) => setNotificationEmail(e.target.value)}
                             className="bg-slate-800 border-slate-700 text-slate-200 placeholder:text-slate-600 max-w-sm"
                           />
+                          <p className="text-[10px] text-slate-500">Primary: Telegram | Backup: Gmail</p>
                         </div>
                         <div className="flex gap-2">
                           <Button
@@ -1401,7 +1502,7 @@ export default function Page() {
                           <CheckCircle className="h-8 w-8 text-emerald-500" />
                         </div>
                         <h3 className="text-lg font-semibold text-slate-300 mb-2">No active alerts</h3>
-                        <p className="text-sm text-slate-500 max-w-md mx-auto">All clear. No CAPTCHAs, OTPs, or login issues detected. Click "Check Alerts" to scan for issues.</p>
+                        <p className="text-sm text-slate-500 max-w-md mx-auto">All clear. No CAPTCHAs, OTPs, or login issues detected. Alerts are sent to your Telegram automatically. Click "Check Alerts" to scan manually.</p>
                       </CardContent>
                     </Card>
                   ) : (
@@ -1437,6 +1538,7 @@ export default function Page() {
                               )}
                               <div className="flex flex-wrap gap-4 text-xs text-slate-500">
                                 {alert.system_state && <span>State: {alert.system_state}</span>}
+                                {alert.telegram_sent && <span className="flex items-center gap-1"><MessageCircle className="h-3 w-3 text-blue-400" />Telegram: {alert.telegram_sent}</span>}
                                 {alert.notification_sent && <span>Notification: {alert.notification_sent} via {alert.notification_method ?? 'N/A'}</span>}
                                 {alert.timestamp && <span>Time: {alert.timestamp}</span>}
                               </div>

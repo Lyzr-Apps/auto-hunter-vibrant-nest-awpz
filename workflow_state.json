@@ -83,7 +83,7 @@
         "temperature": 0.2,
         "top_p": 1,
         "has_knowledge_base": false,
-        "tools": ["GMAIL_SEND_EMAIL"]
+        "tools": ["GMAIL_SEND_EMAIL", "TELEGRAM_BOT_SEND_MESSAGE"]
       },
       {
         "name": "Analytics and Feedback Agent",
